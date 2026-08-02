@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  lldap:
+    image: lldap/lldap:stable
+    container_name: mock-ldap
+    ports:
+      - "3890:3890"   # LDAP protocol port
+      - "17170:17170" # Web admin UI
+    volumes:
+      - ./lldap_data:/data
+    environment:
+      - LLDAP_JWT_SECRET=some-random-secret-string
+      - LLDAP_KEY_SEED=some-random-seed-string
+      - LLDAP_LDAP_USER_PASS=admin123
+      - LLDAP_LDAP_BASE_DN=dc=company,dc=local

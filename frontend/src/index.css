@@ -1,0 +1,140 @@
+/* ==========================================================================
+   GLOBAL STYLES + DESIGN TOKENS
+   --------------------------------------------------------------------------
+   These custom properties (CSS variables) are pulled straight from the
+   Orange brand guideline PDF you supplied:
+     - Core palette: black / white / orange, min 80% core color, 30% orange.
+     - Supporting colors used sparingly (max 20%): blue, green, pink,
+       purple, yellow.
+     - Font: Helvetica Neue 75 Bold (headings) / 55 Roman (body). Since we
+       can't ship a licensed font file, we fall back to the brand's own
+       approved "native system font" stack for digital (San Francisco /
+       Roboto / Segoe UI).
+     - Sentence case everywhere, square bullets/elements (never rounded),
+       flat & bold, no gradients, no drop shadows on text.
+   ========================================================================== */
+
+:root {
+  /* ---- Core brand colors (80% minimum usage) ---- */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-orange: #ff7900;
+
+  /* ---- Supporting colors (max 20% usage combined, used only for small
+     status accents like role badges - never for large surfaces) ---- */
+  --color-support-blue: #4bb4e6;
+  --color-support-green: #50be87;
+  --color-support-pink: #ffb4e6;
+  --color-support-purple: #a885d8;
+  --color-support-yellow: #ffd200;
+
+  /* ---- Neutrals used for surfaces/borders (still counted as "core") ---- */
+  --color-grey-dark: #595959;
+  --color-grey: #8f8f8f;
+  --color-grey-light: #d6d6d6;
+  --color-surface: #0d0d0d; /* near-black surface for cards on dark bg */
+
+  /* ---- Typography ---- */
+  --font-brand: 'Helvetica Neue', -apple-system, 'San Francisco', 'Segoe UI',
+    Roboto, Arial, sans-serif;
+  --weight-bold: 700; /* stands in for Helvetica Neue 75 Bold */
+  --weight-regular: 400; /* stands in for Helvetica Neue 55 Roman */
+
+  /* ---- Spacing / shape ---- */
+  --radius: 0px; /* brand uses square shapes, never rounded corners */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-weight: var(--weight-regular);
+  /* Eco-branding guideline: prefer a dark/black background for digital
+     surfaces to reduce OLED energy consumption. */
+  background-color: var(--color-black);
+  color: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: var(--weight-bold);
+  /* Brand rule: sentence case only, never all caps or italic. */
+  text-transform: none;
+  font-style: normal;
+  margin: 0 0 var(--space-3) 0;
+}
+
+a {
+  color: var(--color-orange);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Visible keyboard focus state everywhere, for accessibility. */
+:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 2px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Respect users who've asked their OS to reduce motion. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Thin, on-brand scrollbar for scrollable panels (e.g. the team-apps modal's
+   applications table) instead of the bulky default OS scrollbar. */
+.themed-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-orange) var(--color-surface); /* Firefox: thumb, track */
+}
+
+.themed-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.themed-scroll::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+.themed-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-orange);
+  border-radius: 0; /* brand rule: never rounded corners */
+}
+
+.themed-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-white);
+}
