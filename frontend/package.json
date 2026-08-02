@@ -4,6 +4,14 @@
   "version": "0.1.0",
   "author": "Antony Adel <antonyadel2005@gmail.com>",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AntonyAdel-gif/On-Call-Portal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AntonyAdel-gif/On-Call-Portal/issues"
+  },
+  "homepage": "https://github.com/AntonyAdel-gif/On-Call-Portal#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
