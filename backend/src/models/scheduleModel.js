@@ -237,7 +237,7 @@ export const getByStartDateAndEmp = async (startDt, empId) => {
     return rDate === dateStr;
   });
 
-  return matched || fallback.rows[0];
+  return matched || null;
 };
 
 export const getByStartDate = async (startDt) => {
