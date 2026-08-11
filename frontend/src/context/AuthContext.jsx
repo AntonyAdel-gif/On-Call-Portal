@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { login as apiLogin, fetchMe } from '../services/api.js';
 import {
   expireSession,
@@ -22,6 +23,7 @@ function getTokenExpiration(token) {
 }
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
@@ -33,6 +35,7 @@ export function AuthProvider({ children }) {
       setToken(null);
       setUser(null);
       setIsLoading(false);
+      navigate('/', { replace: true });
     }
 
     async function handleStorage(event) {
@@ -66,7 +69,7 @@ export function AuthProvider({ children }) {
       window.removeEventListener(SESSION_EXPIRED_EVENT, clearSessionState);
       window.removeEventListener('storage', handleStorage);
     };
-  }, []);
+  }, [navigate]);
 
   // Proactively end the session at the JWT's exp time. Rechecking when the tab
   // becomes visible handles browsers that throttle background-tab timers.

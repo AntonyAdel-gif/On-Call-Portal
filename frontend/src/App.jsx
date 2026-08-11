@@ -24,9 +24,9 @@ import SuperAdminDashboardPage from './pages/SuperAdminDashboardPage.jsx';
 
 export default function App() {
   return (
-    // AuthProvider wraps everything so any page/component can call useAuth().
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      {/* AuthProvider is inside the router so session expiry can return users to the public schedule. */}
+      <AuthProvider>
         {/* Header is outside <Routes>, so it stays visible on every page. */}
         <Header />
 
@@ -64,7 +64,7 @@ export default function App() {
           {/* Catch-all: any unknown URL falls back to the public page. */}
           <Route path="*" element={<PublicSchedulePage />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
