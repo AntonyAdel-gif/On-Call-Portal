@@ -6,6 +6,7 @@
 
 import { useState } from 'react';
 import Button from './ui/Button.jsx';
+import RequiredIndicator from './ui/RequiredIndicator.jsx';
 
 export default function TeamForm({
   initialValues,
@@ -104,7 +105,7 @@ export default function TeamForm({
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <label style={styles.label}>
-        Team name
+        <span>Team name<RequiredIndicator /></span>
         <input
           style={styles.input}
           value={values.team_name}
@@ -131,7 +132,7 @@ export default function TeamForm({
       </label>
 
       <label style={styles.label}>
-        Rotation cycle (days)
+        <span>Rotation cycle (days)<RequiredIndicator /></span>
         <input
           type="number"
           min="1"
@@ -144,7 +145,7 @@ export default function TeamForm({
 
       {/* Custom Date Picker Controls */}
       <label style={styles.label}>
-        Cycle start date (DD/MM/YYYY)
+        <span>Cycle start date (DD/MM/YYYY)<RequiredIndicator /></span>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {/* Day (DD) */}
           <select
