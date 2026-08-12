@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import Button from './ui/Button.jsx';
 
-export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
+export default function ApplicationForm({ initialValues, onSubmit, onCancel, teams = [], showTeamSelect = false }) {
   // Normalize initial form values to handle variations in prop naming conventions across endpoints.
   const [values, setValues] = useState(
     initialValues
@@ -17,6 +17,7 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
           basicat: initialValues.basicat || '',
           cartoo_id: initialValues.cartoo_id || initialValues.cartoId || '',
           support: initialValues.support || '',
+          team_id: initialValues.team_id || initialValues.teamId || '',
         }
       : {
   application_name: '',
@@ -24,6 +25,7 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
   basicat: '',
   cartoo_id: '',
   support: '',
+  team_id: '',
 }
   );
 
@@ -47,6 +49,7 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
         basicat: '',
         cartoo_id: '',
         support: '',
+        team_id: '',
       });
     }
   }
@@ -93,6 +96,24 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
   <option value="Ops">Ops</option>
   <option value="Both">Both</option>
 </select>
+      {showTeamSelect && (
+        <select
+          style={styles.input}
+          value={values.team_id}
+          onChange={(e) => handleChange('team_id', e.target.value)}
+          required
+        >
+          <option value="">Select team</option>
+          {teams.map((team) => {
+            const teamId = team.team_id ?? team.id;
+            return (
+              <option key={teamId} value={teamId}>
+                {team.team_name || team.name}
+              </option>
+            );
+          })}
+        </select>
+      )}
       <Button type="submit">{initialValues ? 'Save application' : 'Add application'}</Button>
       {onCancel && (
         <Button type="button" variant="secondary" onClick={onCancel}>

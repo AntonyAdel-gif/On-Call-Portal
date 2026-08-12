@@ -49,6 +49,10 @@ if (!['Infra', 'Ops', 'Both'].includes(support)) {
       return res.status(400).json({ error: 'application_name is required' });
     }
 
+    if (role === 'super_admin' && !team_id) {
+      return res.status(400).json({ error: 'team_id is required for super admin applications' });
+    }
+
     const adminTeamId = await getAdminTeamId(req.user);
 
     // Admin's app always belongs to their own team; super admin can choose freely (or leave N/A)

@@ -268,10 +268,14 @@ export default function SuperAdminDashboardPage() {
 
   async function handleAppSubmit(values) {
     try {
+      const teamValues = { ...values, team_id: managingAppsForTeam };
       if (editingApp === 'new') {
-        await addTeamApp(values, managingAppsForTeam);
+        await addTeamApp(teamValues);
       } else {
-        await updateTeamApp(managingAppsForTeam, { ...values, id: editingApp.id || editingApp.application_id });
+        await updateTeamApp(managingAppsForTeam, {
+          ...teamValues,
+          id: editingApp.id || editingApp.application_id,
+        });
       }
       setEditingApp(null);
       reload();
@@ -571,6 +575,8 @@ export default function SuperAdminDashboardPage() {
               initialValues={editingApp === 'new-global' ? null : editingApp}
               onSubmit={handleGlobalAppSubmit}
               onCancel={() => setEditingApp(null)}
+              teams={teams}
+              showTeamSelect
             />
           </div>
         )}
