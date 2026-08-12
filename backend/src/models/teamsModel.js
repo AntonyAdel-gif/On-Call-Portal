@@ -14,6 +14,14 @@ export const getById = async (id) => {
   return result.rows[0];
 };
 
+export const getAdminTeamId = async (managerEmpId) => {
+  const result = await pool.query(
+    'SELECT team_id FROM teams WHERE manager_emp_id = $1',
+    [managerEmpId]
+  );
+  return result.rows[0]?.team_id ?? null;
+};
+
 export const create = async ({
   team_name,
   cycle_day,
