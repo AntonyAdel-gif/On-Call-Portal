@@ -46,6 +46,9 @@ export default function AdminDashboardPage() {
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [editingApp, setEditingApp] = useState(null);
   const [appSearchTerm, setAppSearchTerm] = useState('');
+
+const [supportFilter, setSupportFilter] = useState("");
+
   const [rosterPage, setRosterPage] = useState(1);
   const [isTablesLoading, setIsTablesLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -445,19 +448,51 @@ export default function AdminDashboardPage() {
         <>
           <input
             type="text"
-            placeholder="Search by (name, basicat, cartoo)..."
+            placeholder="Search by (name, basicat, cartoo, support)..."
             value={appSearchTerm}
             onChange={(e) => setAppSearchTerm(e.target.value)}
             style={styles.searchInput}
           />
+
+
+
+<select
+
+  value={supportFilter}
+
+  onChange={(e) => setSupportFilter(e.target.value)}
+
+>
+
+  <option value="">All Support</option>
+
+  <option value="Infra">Infra</option>
+
+  <option value="Ops">Ops</option>
+
+  <option value="Both">Both</option>
+
+</select>
           {teamApps.filter((app) => {
-            if (!appSearchTerm.trim()) return true;
-            const term = appSearchTerm.toLowerCase();
-            const name = (app.application_name || app.name || '').toLowerCase();
-            const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
-            const basicat = (app.basicat || '').toLowerCase();
-            return name.includes(term) || cartooId.includes(term) || basicat.includes(term);
-          }).length === 0 ? (
+  const term = appSearchTerm.trim().toLowerCase();
+
+  const name = (app.application_name || app.name || '').toLowerCase();
+  const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
+  const basicat = (app.basicat || '').toLowerCase();
+  const support = (app.support || '').toLowerCase();
+
+  const matchesSearch =
+    !term ||
+    name.includes(term) ||
+    cartooId.includes(term) ||
+    basicat.includes(term);
+
+  const matchesSupport =
+    !supportFilter ||
+    support === supportFilter.toLowerCase();
+
+  return matchesSearch && matchesSupport;
+}).length === 0 ? (
             <p style={{ marginTop: 12 }}>No matching applications found.</p>
           ) : (
             <Table style={{ marginTop: 12 }}>
@@ -467,18 +502,27 @@ export default function AdminDashboardPage() {
                   <Th>SLA</Th>
                   <Th>Basicat</Th>
                   <Th>Carto ID</Th>
+                  <Th>Support</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {teamApps
                   .filter((app) => {
-                    if (!appSearchTerm.trim()) return true;
-                    const term = appSearchTerm.toLowerCase();
+                    const term = appSearchTerm.trim().toLowerCase();
                     const name = (app.application_name || app.name || '').toLowerCase();
                     const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
                     const basicat = (app.basicat || '').toLowerCase();
-                    return name.includes(term) || cartooId.includes(term) || basicat.includes(term);
+                    const support = (app.support || '').toLowerCase();
+                    const matchesSearch =
+                      !term ||
+                      name.includes(term) ||
+                      cartooId.includes(term) ||
+                      basicat.includes(term) ||
+                      support.includes(term);
+                    const matchesSupport =
+                      !supportFilter || support === supportFilter.toLowerCase();
+                    return matchesSearch && matchesSupport;
                   })
                   .map((app, idx) => {
                     const appId = app.application_id ?? app.id ?? idx;
@@ -490,6 +534,7 @@ export default function AdminDashboardPage() {
                         <Td>{app.sla || '—'}</Td>
                         <Td>{app.basicat || '—'}</Td>
                         <Td>{cartoId || '—'}</Td>
+                        <Td>{app.support || '—'}</Td>
                         <Td>
                           <Button variant="link" onClick={() => setEditingApp(app)}>
                             Edit

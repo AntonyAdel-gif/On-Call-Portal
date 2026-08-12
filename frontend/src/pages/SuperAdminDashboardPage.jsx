@@ -496,6 +496,7 @@ export default function SuperAdminDashboardPage() {
                     <Th>SLA</Th>
                     <Th>Basicat</Th>
                     <Th>Carto ID</Th>
+                    <Th>Support</Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
@@ -506,6 +507,7 @@ export default function SuperAdminDashboardPage() {
                       <Td>{app.sla || '—'}</Td>
                       <Td>{app.basicat || '—'}</Td>
                       <Td>{app.cartoo_id || app.cartoId || '—'}</Td>
+                      <Td>{app.support || '—'}</Td>
                       <Td>
                         <Button variant="link" onClick={() => setEditingApp(app)}>
                           Edit
@@ -575,7 +577,7 @@ export default function SuperAdminDashboardPage() {
 
         <input
           type="text"
-          placeholder="Search by (name, basicat, cartoo)..."
+          placeholder="Search by (name, basicat, cartoo, support)..."
           value={appSearchTerm}
           onChange={(e) => {
             setAppSearchTerm(e.target.value);
@@ -591,7 +593,14 @@ export default function SuperAdminDashboardPage() {
             const name = (app.application_name || app.name || '').toLowerCase();
             const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
             const basicat = (app.basicat || '').toLowerCase();
-            return name.includes(term) || cartooId.includes(term) || basicat.includes(term);
+            const support = (app.support || '').toLowerCase();
+            return (
+  name.includes(term) ||
+  cartooId.includes(term) ||
+  basicat.includes(term) ||
+  support.includes(term)
+);
+
           });
           const totalAppsPages = Math.ceil(filteredGlobalApps.length / 10);
           const paginatedApps = filteredGlobalApps.slice((appsPage - 1) * 10, appsPage * 10);
@@ -609,6 +618,7 @@ export default function SuperAdminDashboardPage() {
                     <Th>SLA</Th>
                     <Th>Basicat</Th>
                     <Th>Carto ID</Th>
+                    <Th>Support</Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
@@ -619,6 +629,7 @@ export default function SuperAdminDashboardPage() {
                       <Td>{app.sla || '—'}</Td>
                       <Td>{app.basicat || '—'}</Td>
                       <Td>{app.cartoo_id || app.cartoId || '—'}</Td>
+                      <Td>{app.support || '—'}</Td>
                       <Td>
                         <Button variant="link" onClick={() => setEditingApp(app)}>
                           Edit

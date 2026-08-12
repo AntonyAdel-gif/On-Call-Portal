@@ -16,8 +16,15 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
           sla: initialValues.sla || '',
           basicat: initialValues.basicat || '',
           cartoo_id: initialValues.cartoo_id || initialValues.cartoId || '',
+          support: initialValues.support || '',
         }
-      : { application_name: '', sla: '', basicat: '', cartoo_id: '' }
+      : {
+  application_name: '',
+  sla: '',
+  basicat: '',
+  cartoo_id: '',
+  support: '',
+}
   );
 
   function handleChange(field, value) {
@@ -34,7 +41,13 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
     e.preventDefault();
     onSubmit(values);
     if (!initialValues) {
-      setValues({ application_name: '', sla: '', basicat: '', cartoo_id: '' });
+      setValues({
+        application_name: '',
+        sla: '',
+        basicat: '',
+        cartoo_id: '',
+        support: '',
+      });
     }
   }
 
@@ -69,6 +82,17 @@ export default function ApplicationForm({ initialValues, onSubmit, onCancel }) {
         maxLength={5}
         title="Up to 5 digits"
       />
+      <select
+  style={styles.input}
+  value={values.support}
+  onChange={(e) => handleChange('support', e.target.value)}
+  required
+>
+  <option value="">Select support</option>
+  <option value="Infra">Infra</option>
+  <option value="Ops">Ops</option>
+  <option value="Both">Both</option>
+</select>
       <Button type="submit">{initialValues ? 'Save application' : 'Add application'}</Button>
       {onCancel && (
         <Button type="button" variant="secondary" onClick={onCancel}>
