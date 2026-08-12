@@ -29,10 +29,12 @@ export const getCurrentOnCallDashboard = async () => {
 export const getTeamAppsAndEscalation = async (teamId) => {
   const result = await pool.query(
     `SELECT
+       a.application_id,
        a.application_name,
        a.sla,
        a.basicat,
        a.cartoo_id,
+       a.support,
        m.emp_name AS escalation_name,
        m.phone1 AS escalation_phone
      FROM applications a

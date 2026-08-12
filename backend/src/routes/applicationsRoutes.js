@@ -184,13 +184,17 @@ router.post('/', requireRole('admin', 'super_admin'), createApplication);
  *       500:
  *         description: Server error
  */
-router.put('/:id', requireRole('super_admin'), updateApplication);
+router.put(
+  '/:id',
+  requireRole('admin', 'super_admin'),
+  updateApplication
+);
 
 /**
  * @openapi
  * /applications/{id}:
  *   delete:
- *     summary: Remove an application (super_admin only)
+ *     summary: Remove an application (admin or super_admin)
  *     tags:
  *       - Applications
  *     security:
@@ -212,6 +216,6 @@ router.put('/:id', requireRole('super_admin'), updateApplication);
  *       500:
  *         description: Server error
  */
-router.delete('/:id', requireRole('super_admin'), removeApplication);
+router.delete('/:id', requireRole('admin', 'super_admin'), removeApplication);
 
 export default router;

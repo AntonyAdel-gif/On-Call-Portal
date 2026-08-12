@@ -3,15 +3,15 @@ import pool from '../db.js';
 
 export const getAll = async () => {
   const result = await pool.query(`
-    SELECT application_id, application_name, sla, basicat, cartoo_id, team_id
-    FROM applications
+    SELECT application_id, application_name, sla, basicat, cartoo_id, support, team_id
+FROM applications
   `);
   return result.rows;
 };
 
 export const getByTeamId = async (teamId) => {
   const result = await pool.query(
-    `SELECT application_id, application_name, sla, basicat, cartoo_id
+    `SELECT application_id, application_name, sla, basicat, cartoo_id, support
      FROM applications
      WHERE team_id = $1`,
     [teamId]
@@ -27,25 +27,61 @@ export const getById = async (id) => {
   return result.rows[0];
 };
 
-export const create = async ({ application_name, sla, basicat, cartoo_id, team_id }) => {
+export const create = async ({
+  application_name,
+  sla,
+  basicat,
+  cartoo_id,
+  support,
+  team_id,
+}) => {
   const result = await pool.query(
-    `INSERT INTO applications (application_name, sla, basicat, cartoo_id, team_id)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO applications
+      (application_name, sla, basicat, cartoo_id, support, team_id)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [application_name, sla, basicat, cartoo_id, team_id || null]
+    [
+      application_name,
+      sla,
+      basicat,
+      cartoo_id,
+      support,
+      team_id || null,
+    ]
   );
+
   return result.rows[0];
 };
 
 export const update = async (id, fields) => {
-  const { application_name, sla, basicat, cartoo_id, team_id } = fields;
+  const {
+  application_name,
+  sla,
+  basicat,
+  cartoo_id,
+  support,
+  team_id,
+} = fields;
   const result = await pool.query(
-    `UPDATE applications
-     SET application_name = $1, sla = $2, basicat = $3, cartoo_id = $4, team_id = $5
-     WHERE application_id = $6
-     RETURNING *`,
-    [application_name, sla, basicat, cartoo_id, team_id || null, id]
-  );
+  `UPDATE applications
+   SET application_name = $1,
+       sla = $2,
+       basicat = $3,
+       cartoo_id = $4,
+       support = $5,
+       team_id = $6
+   WHERE application_id = $7
+   RETURNING *`,
+  [
+    application_name,
+    sla,
+    basicat,
+    cartoo_id,
+    support,
+    team_id || null,
+    id,
+  ]
+);
   return result.rows[0];
 };
 
