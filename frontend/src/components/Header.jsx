@@ -47,7 +47,15 @@ export default function Header() {
         {user && (
           <>
             <span style={styles.userName}>{user.emp_name || user.name}</span>
-            <Button variant="outline" size="small" onClick={logout}>
+           <Button
+  variant="outline"
+  size="small"
+  onClick={() => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) logout();
+  }}
+>
+
               Log out
             </Button>
           </>
