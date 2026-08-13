@@ -7,7 +7,6 @@
 
 import { useState } from 'react';
 import Button from './ui/Button.jsx';
-import RequiredIndicator from './ui/RequiredIndicator.jsx';
 
 export default function StaticRowForm({ initialValues, onSubmit, onCancel }) {
   // Normalize initial Values for static info directory link editing.
@@ -36,7 +35,7 @@ export default function StaticRowForm({ initialValues, onSubmit, onCancel }) {
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <label style={styles.label}>
-        <span>Team name<RequiredIndicator /></span>
+        Team name
         <input
           style={styles.input}
           placeholder="e.g. Network Operations"
@@ -47,7 +46,7 @@ export default function StaticRowForm({ initialValues, onSubmit, onCancel }) {
       </label>
 
       <label style={styles.label}>
-        <span>URL<RequiredIndicator /></span>
+        URL
         <input
           style={styles.input}
           placeholder="e.g. https://status.orange.com/network-operations"

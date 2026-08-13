@@ -6,7 +6,6 @@
 
 import { useState } from 'react';
 import Button from './ui/Button.jsx';
-import RequiredIndicator from './ui/RequiredIndicator.jsx';
 
 export default function EmployeeForm({
   initialValues,
@@ -92,7 +91,7 @@ export default function EmployeeForm({
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <label style={styles.label}>
-        <span>Full name<RequiredIndicator /></span>
+        Full name
         <input
           style={styles.input}
           value={values.emp_name}
@@ -102,7 +101,7 @@ export default function EmployeeForm({
       </label>
 
       <label style={styles.label}>
-        <span>Email<RequiredIndicator /></span>
+        Email
         <input
           type="email"
           style={styles.input}
@@ -113,7 +112,7 @@ export default function EmployeeForm({
       </label>
 
       <label style={styles.label}>
-        <span>Phone number<RequiredIndicator /></span>
+        Phone number
         <input
           style={styles.input}
           value={values.phone1}
@@ -123,7 +122,7 @@ export default function EmployeeForm({
       </label>
 
       <label style={styles.label}>
-        <span>FTID<RequiredIndicator /></span>
+        FTID
         <input
           style={styles.input}
           value={values.ftid}
