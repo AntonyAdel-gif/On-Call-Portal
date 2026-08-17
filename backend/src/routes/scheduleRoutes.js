@@ -69,8 +69,16 @@ router.use(authMiddleware);
  *       500:
  *         description: Server error
  */
+<<<<<<< Updated upstream
 router.get('/past/history', requireRole('admin', 'super_admin'), getPastSchedule);
 
+=======
+router.get(
+  '/past/history',
+  requireRole('admin', 'super_admin'),
+  getPastSchedule
+);
+>>>>>>> Stashed changes
 /**
  * @openapi
  * /schedule/{teamId}:
