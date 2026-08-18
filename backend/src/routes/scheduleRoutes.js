@@ -2,7 +2,12 @@
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import requireRole from '../middlewares/requireRole.js';
-import { getTeamSchedule, triggerRotationExtend, getFullScheduleMatrix, getPastSchedule } from '../controllers/scheduleController.js';
+import {
+  getTeamSchedule,
+  triggerRotationExtend,
+  getFullScheduleMatrix,
+  getPastSchedule,
+} from '../controllers/scheduleController.js';
 
 const router = express.Router();
 
@@ -69,16 +74,12 @@ router.use(authMiddleware);
  *       500:
  *         description: Server error
  */
-<<<<<<< Updated upstream
-router.get('/past/history', requireRole('admin', 'super_admin'), getPastSchedule);
-
-=======
 router.get(
   '/past/history',
   requireRole('admin', 'super_admin'),
   getPastSchedule
 );
->>>>>>> Stashed changes
+
 /**
  * @openapi
  * /schedule/{teamId}:

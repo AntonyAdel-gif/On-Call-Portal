@@ -248,7 +248,7 @@ async function runVerification() {
     console.log('\n--- STEP 9: Mutation - Swap Request ---');
     // Set up two user role employees
     await db.query("UPDATE employee SET ftid='admin_temp2' WHERE emp_id=2");
-    
+
     // Create/get user 1 (requester)
     let user1Res = await db.query("SELECT * FROM employee WHERE role='user' AND team_id=1 LIMIT 1");
     let user1Id;

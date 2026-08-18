@@ -39,15 +39,9 @@ export const getPastSchedule = async (req, res) => {
 
     // Forces team admin callers to view historical logs for their own team only, preventing cross-team history leaks.
     if (req.user.role === 'admin') {
-<<<<<<< Updated upstream
-      const adminTeamId = req.user.team_id ?? await Teams.getAdminTeamId(req.user.emp_id);
-      if (!adminTeamId) {
-        return res.status(403).json({ error: 'No team is assigned to this admin' });
-=======
       const adminTeamId = await Teams.getAdminTeamId(req.user.emp_id);
       if (!adminTeamId) {
         return res.json([]);
->>>>>>> Stashed changes
       }
       targetTeamId = adminTeamId;
     }
