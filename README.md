@@ -80,7 +80,18 @@ docker compose up -d
    JWT_SECRET=super_secret_jwt_key_123
    LDAP_URL=ldap://localhost:3890
    LDAP_BASE_DN=dc=example,dc=com
+   MAIL_ENABLED=false
+   SMTP_HOST=smtp.example.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=on-call@example.com
+   SMTP_PASSWORD=replace_with_smtp_password
+   SMTP_FROM="On-Call Portal <on-call@example.com>"
+   MAIL_TIME_ZONE=Africa/Cairo
+   APP_BASE_URL=http://localhost:5173
    ```
+
+   Set `MAIL_ENABLED=true` when the SMTP credentials are ready. Use `SMTP_SECURE=true` for implicit TLS (normally port 465); port 587 normally uses `SMTP_SECURE=false` and upgrades with STARTTLS. `SMTP_USER` and `SMTP_PASSWORD` may both be left empty for a trusted internal relay. The backend verifies the SMTP connection at startup and continues serving API requests if verification fails.
 
 3. Start the backend development server:
    ```bash

@@ -258,7 +258,21 @@ export const getByStartDate = async (startDt) => {
      LIMIT 1`,
     [strVal, dateStr]
   );
-  return result.rows[0];
+  if (result.rows.length > 0) return result.rows[0];
+
+  // Swap-request timestamps pass through a TIMESTAMP WITHOUT TIME ZONE column and can
+  // differ from the original schedule timestamp by a few hours after serialization.
+  // Select only the nearest cycle boundary within one day so acceptance emails can still
+  // retrieve the authoritative end_dt without assuming a fixed cycle length.
+  const closest = await pool.query(
+    `SELECT * FROM schedule
+     WHERE start_dt BETWEEN $1::timestamp - INTERVAL '1 day'
+                        AND $1::timestamp + INTERVAL '1 day'
+     ORDER BY ABS(EXTRACT(EPOCH FROM (start_dt - $1::timestamp))) ASC
+     LIMIT 1`,
+    [strVal]
+  );
+  return closest.rows[0] || null;
 };
 
 // Returns full chronological rotation schedule for a single team.
