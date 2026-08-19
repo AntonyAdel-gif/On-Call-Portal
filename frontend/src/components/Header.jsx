@@ -8,9 +8,11 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import OrangeLogo from './OrangeLogo.jsx';
 import Button from './ui/Button.jsx';
+import { Sun, Moon } from "lucide-react";
 
-export default function Header() {
+export default function Header({ toggleTheme, theme }) {
   const { user, logout } = useAuth();
+
 
   return (
     <header style={styles.header}>
@@ -20,11 +22,7 @@ export default function Header() {
       </Link>
 
       <nav style={styles.nav}>
-        {!user && (
-          <Button as={Link} to="/login">
-            Log in
-          </Button>
-        )}
+       
 
         {user && user.role === 'user' && (
           <Link to="/my-schedule" style={styles.navLink}>
@@ -44,20 +42,71 @@ export default function Header() {
           </Link>
         )}
 
-        {user && (
+       
+
+<div
+  onClick={toggleTheme}
+  style={{
+    width: "60px",
+    height: "30px",
+    borderRadius: "30px",
+    backgroundColor: theme === "dark" ? "#222" : "#ddd",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: theme === "dark" ? "flex-end" : "flex-start",
+    padding: "4px",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    border: "2px solid #ff7900",
+    marginLeft: "8px",
+  }}
+  
+>
+
+  <div
+    style={{
+      width: "22px",
+      height: "22px",
+      borderRadius: "50%",
+      backgroundColor: theme === "dark" ? "#000" : "#fff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "all 0.3s ease",
+    }}
+  >
+    {theme === "dark" ? (
+      <Moon size={14} color="#fff" />
+    ) : (
+      <Sun size={14} color="#000" />
+    )}
+  </div>
+</div>
+{!user && (
+          <Button as={Link} to="/login">
+            Log in
+          </Button>
+        )}
+ {user && (
           <>
             <span style={styles.userName}>{user.emp_name || user.name}</span>
-           <Button
+          
+ <Button
   variant="outline"
   size="small"
   onClick={() => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (confirmLogout) logout();
+  
+
   }}
 >
 
               Log out
             </Button>
+
+
+
           </>
         )}
       </nav>
