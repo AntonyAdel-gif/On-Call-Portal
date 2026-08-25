@@ -42,7 +42,13 @@ export const extendRotation = async (teamId, cyclesToAdd = null, minDaysAhead = 
   );
   if (teamRes.rows.length === 0) return [];
   const { cycle_day, cycle_st_day } = teamRes.rows[0];
-
+  const cycleDays = Number(cycle_day);
+  if (!Number.isFinite(cycleDays) || cycleDays <= 0) {
+    console.warn(
+      `Skipping rotation extension for team ${teamId}: invalid cycle_day=${cycle_day}`
+    );
+  return [];
+  }
   // Exclude team manager from shift assignments to keep them dedicated to escalation/management.
   const empRes = await pool.query(
     `SELECT e.emp_id, e.bk_emp_id

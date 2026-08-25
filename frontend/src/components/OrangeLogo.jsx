@@ -28,7 +28,7 @@ export default function OrangeLogo({ size = 32 }) {
         style={{
           width: '100%',
           height: size * 0.18,
-          backgroundColor: 'var(--color-white)',
+            backgroundColor: '#ffffff', // always white,
         }}
       />
     </div>
