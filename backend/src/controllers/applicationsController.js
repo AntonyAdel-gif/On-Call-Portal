@@ -13,6 +13,22 @@ const getAdminTeamId = async (user) => {
   return user.team_id;
 };
 
+const validateApplicationUniqueness = async ({ application_name, cartoo_id, excludeId }) => {
+  const duplicates = await Applications.findDuplicate({
+    application_name,
+    cartoo_id,
+    excludeId,
+  });
+
+  if (duplicates.applicationNameExists) {
+    return { field: 'application_name', error: 'Application name already exists' };
+  }
+  if (duplicates.cartooIdExists) {
+    return { field: 'cartoo_id', error: 'Cartoo ID already exists' };
+  }
+  return null;
+};
+
 // GET /api/applications
 // Super admin only — the full application list feature
 export const getApplications = async (req, res) => {
@@ -41,22 +57,44 @@ export const createApplication = async (req, res) => {
 
 if (!['Infra', 'Ops', 'Both'].includes(support)) {
   return res.status(400).json({
+    field: 'support',
     error: 'Support must be Infra, Ops, or Both'
   });
 }
 
     if (!application_name) {
-      return res.status(400).json({ error: 'application_name is required' });
+      return res.status(400).json({
+        field: 'application_name',
+        error: 'Application name is required'
+      });
+    }
+
+    if (!/^\d{5}$/.test(cartoo_id || '')) {
+      return res.status(400).json({
+        field: 'cartoo_id',
+        error: 'Cartoo ID must be exactly 5 digits'
+      });
     }
 
     if (role === 'super_admin' && !team_id) {
-      return res.status(400).json({ error: 'team_id is required for super admin applications' });
+      return res.status(400).json({
+        field: 'team_id',
+        error: 'Team is required for super admin applications'
+      });
     }
 
     const adminTeamId = await getAdminTeamId(req.user);
 
     // Admin's app always belongs to their own team; super admin can choose freely (or leave N/A)
     const targetTeamId = role === 'super_admin' ? team_id : adminTeamId;
+
+    const duplicateError = await validateApplicationUniqueness({
+      application_name,
+      cartoo_id,
+    });
+    if (duplicateError) {
+      return res.status(409).json(duplicateError);
+    }
 
    const newApp = await Applications.create({
   application_name,
@@ -71,7 +109,10 @@ if (!['Infra', 'Ops', 'Both'].includes(support)) {
   } catch (err) {
     console.error(err);
     if (err.code === '23514') {
-      return res.status(400).json({ error: 'Cartoo ID must be exactly 5 characters' });
+      return res.status(400).json({
+        field: 'cartoo_id',
+        error: 'Cartoo ID must be exactly 5 digits'
+      });
     }
     res.status(500).json({ error: 'Failed to create application' });
   }
@@ -109,16 +150,35 @@ if (
   !['Infra', 'Ops', 'Both'].includes(support)
 ) {
   return res.status(400).json({
+    field: 'support',
     error: 'Support must be Infra, Ops, or Both'
   });
 }
 
+const nextApplicationName = application_name ?? existing.application_name;
+const nextCartooId = cartoo_id ?? existing.cartoo_id;
+
+if (!/^\d{5}$/.test(nextCartooId || '')) {
+  return res.status(400).json({
+    field: 'cartoo_id',
+    error: 'Cartoo ID must be exactly 5 digits'
+  });
+}
+
+const duplicateError = await validateApplicationUniqueness({
+  application_name: nextApplicationName,
+  cartoo_id: nextCartooId,
+  excludeId: id,
+});
+if (duplicateError) {
+  return res.status(409).json(duplicateError);
+}
 
 const updated = await Applications.update(id, {
-  application_name: application_name ?? existing.application_name,
+  application_name: nextApplicationName,
   sla: sla ?? existing.sla,
   basicat: basicat ?? existing.basicat,
-  cartoo_id: cartoo_id ?? existing.cartoo_id,
+  cartoo_id: nextCartooId,
   support: support ?? existing.support,
   team_id: team_id !== undefined ? team_id : existing.team_id,
 });
@@ -127,7 +187,10 @@ const updated = await Applications.update(id, {
   } catch (err) {
     console.error(err);
     if (err.code === '23514') {
-      return res.status(400).json({ error: 'Cartoo ID must be exactly 5 characters' });
+      return res.status(400).json({
+        field: 'cartoo_id',
+        error: 'Cartoo ID must be exactly 5 digits'
+      });
     }
     res.status(500).json({ error: 'Failed to update application' });
   }
