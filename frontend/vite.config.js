@@ -6,6 +6,15 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './tests/setup.js',
+    coverage: {
+      include: ['src/**/*.{js,jsx}'],
+      exclude: ['src/main.jsx'],
+    },
+  },
   server: {
     // Dev server port. Change this if 5173 is already used on your machine.
     port: 5173,
