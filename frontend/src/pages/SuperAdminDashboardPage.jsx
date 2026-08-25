@@ -127,6 +127,7 @@ export default function SuperAdminDashboardPage() {
 
         await createTeam({
           team_name: row.team_name,
+          email: row.email || row.team_email || null,
           cycle_day: Number(row.cycle_day || 7),
           cycle_st_day: rawStDate,
           manager_emp_id: managerEmpId,
@@ -370,16 +371,18 @@ export default function SuperAdminDashboardPage() {
             </Button>
             <ExcelImportControl
               templateFilename="teams_template.xlsx"
-              headers={['Team Name', 'Manager FTID (or N/A)', 'Rotation Cycle (Days)', 'Cycle Start Date (DD/MM/YYYY)']}
+              headers={['Team Name', 'Team Email', 'Manager FTID (or N/A)', 'Rotation Cycle (Days)', 'Cycle Start Date (DD/MM/YYYY)']}
               sampleRows={[
                 {
                   'Team Name': 'Core Operations',
+                  'Team Email': 'core.operations@orange.com',
                   'Manager FTID (or N/A)': 'FT001',
                   'Rotation Cycle (Days)': '7',
                   'Cycle Start Date (DD/MM/YYYY)': '01/08/2026',
                 },
                 {
                   'Team Name': 'Infrastructure',
+                  'Team Email': 'infrastructure@orange.com',
                   'Manager FTID (or N/A)': 'N/A',
                   'Rotation Cycle (Days)': '14',
                   'Cycle Start Date (DD/MM/YYYY)': '01/08/2026',
@@ -409,6 +412,7 @@ export default function SuperAdminDashboardPage() {
           <Thead>
             <Tr>
               <Th>Team name</Th>
+              <Th>Team email</Th>
               <Th>Manager name</Th>
               <Th></Th>
             </Tr>
@@ -424,6 +428,7 @@ export default function SuperAdminDashboardPage() {
                 return (
                   <Tr key={team.id}>
                     <Td>{team.name}</Td>
+                    <Td>{team.email || '—'}</Td>
                     <Td>{managerName}</Td>
                     <Td>
                       <Button variant="link" onClick={() => setEditingTeam(team)}>

@@ -10,7 +10,7 @@
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.cjs tests/unit",
     "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.integration.config.cjs",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.cjs --coverage",
-    "test:email": "node --test test/emailTemplates.test.js"
+    "test:email": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",

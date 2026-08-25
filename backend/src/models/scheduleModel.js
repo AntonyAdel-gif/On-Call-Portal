@@ -297,6 +297,30 @@ export const getByTeamId = async (teamId) => {
   return result.rows;
 };
 
+// Returns the employee currently covering each team's active schedule interval.
+// The team's shared email address is included for reminder-message CC delivery.
+export const getCurrentOnCallAssignments = async () => {
+  const result = await pool.query(
+    `SELECT DISTINCT ON (t.team_id)
+       t.team_id,
+       t.team_name,
+       t.email AS team_email,
+       e.emp_id,
+       e.emp_name,
+       e.emp_mail,
+       s.start_dt,
+       s.end_dt
+     FROM teams t
+     JOIN employee e ON e.team_id = t.team_id
+     JOIN schedule s ON s.emp_id = e.emp_id
+     WHERE e.active_flg = TRUE
+       AND CURRENT_TIMESTAMP >= s.start_dt
+       AND CURRENT_TIMESTAMP < s.end_dt
+     ORDER BY t.team_id, s.start_dt DESC`
+  );
+  return result.rows;
+};
+
 // Uses window function ROW_NUMBER() PARTITION BY team_id to return the top N upcoming shifts per team for the multi-team matrix view.
 export const getFullScheduleAllTeams = async (weeksPerTeam = 8) => {
   const result = await pool.query(

@@ -5,6 +5,7 @@ CREATE TYPE swap_status AS ENUM ('pending', 'accepted', 'rejected');
 CREATE TABLE teams (
     team_id SERIAL PRIMARY KEY,
     team_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
     cycle_day INTEGER,
     cycle_st_day DATE,
     manager_emp_id INTEGER
@@ -64,6 +65,7 @@ CREATE TABLE swap_requests (
 );
 
 ALTER TABLE teams ADD CONSTRAINT fk_team_manager FOREIGN KEY (manager_emp_id) REFERENCES employee(emp_id);
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS email VARCHAR(255);
 ALTER TABLE employee ADD CONSTRAINT chk_backup_not_self CHECK (bk_emp_id IS NULL OR bk_emp_id <> emp_id);
 --this is for changing the (app class) & (supporting hours) with basicat & cartoo ID
 ALTER TABLE applications DROP COLUMN app_class;

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   managerScheduleChangedTemplate,
+  onCallReminderTemplate,
   swapRequestApprovedTemplate,
   swapRequestReceivedTemplate,
 } from '../src/services/emailTemplates.js';
@@ -81,4 +82,18 @@ test('manager email identifies the team and both new cross-week assignments', ()
   assert.match(message.text, /Alice & Ops is now on call for August 27 – September 3, 2026/);
   assert.match(message.html, /Schedule updated/);
   assert.match(message.html, /\/admin/);
+});
+
+test('Monday reminder uses the branded template and full shift range', () => {
+  const message = onCallReminderTemplate({
+    employee: { emp_id: 8, emp_name: 'Current On-Call', emp_mail: 'oncall@example.com' },
+    schedule: requesterSchedule,
+  });
+
+  assert.match(message.subject, /On-call reminder for Current On-Call/);
+  assert.match(message.text, /August 20 – 27, 2026/);
+  assert.match(message.html, /On-call reminder/);
+  assert.match(message.html, /Your shift/);
+  assert.match(message.html, /On-Call Schedule app logo/);
+  assert.match(message.html, /\/my-schedule/);
 });

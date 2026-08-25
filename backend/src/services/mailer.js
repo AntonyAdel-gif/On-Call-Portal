@@ -34,7 +34,7 @@ export const verifySmtpConnection = async () => {
   return true;
 };
 
-export const sendMail = async ({ to, subject, text, html }) => {
+export const sendMail = async ({ to, cc, subject, text, html }) => {
   if (!smtpConfig.enabled) {
     console.log(`Email skipped while mail is disabled: ${subject}`);
     return { skipped: true };
@@ -44,6 +44,7 @@ export const sendMail = async ({ to, subject, text, html }) => {
     from: smtpConfig.from,
     replyTo: smtpConfig.replyTo,
     to,
+    cc,
     subject,
     text,
     html,

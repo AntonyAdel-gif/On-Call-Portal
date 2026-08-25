@@ -114,6 +114,7 @@ CREATE TYPE swap_status AS ENUM ('pending', 'accepted', 'rejected');
 CREATE TABLE teams (
     team_id SERIAL PRIMARY KEY,
     team_name VARCHAR NOT NULL,
+    email VARCHAR(255), -- Distribution address CC'd on weekly on-call reminders
     cycle_day INT NOT NULL DEFAULT 7,
     cycle_st_day DATE NOT NULL,
     manager_emp_id INT REFERENCES employee(emp_id) ON DELETE SET NULL

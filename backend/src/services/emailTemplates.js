@@ -200,3 +200,21 @@ export const managerScheduleChangedTemplate = ({
     }),
   };
 };
+
+export const onCallReminderTemplate = ({ employee, schedule }) => {
+  const shift = formatCycleRange(schedule, schedule.start_dt);
+
+  return {
+    subject: `[On-Call Portal] On-call reminder for ${employee.emp_name}`,
+    text: `Hello ${employee.emp_name},\n\nThis is a reminder that you are currently on call for ${shift}.\n\nView your schedule: ${employeeActionUrl}`,
+    html: layout({
+      preview: `You are currently on call for ${shift}.`,
+      eyebrow: 'On-call reminder',
+      heading: 'You are currently on call',
+      body: `<p>Hello ${escapeHtml(employee.emp_name)},</p>
+        <p>This is your weekly reminder that you are the current on-call person.</p>
+        ${shiftSummary([{ label: 'Your shift', value: shift }])}
+        ${button('View your schedule', employeeActionUrl)}`,
+    }),
+  };
+};

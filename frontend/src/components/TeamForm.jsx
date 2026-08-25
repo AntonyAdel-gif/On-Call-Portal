@@ -19,6 +19,7 @@ export default function TeamForm({
     if (!initialValues) {
       return {
         team_name: '',
+        email: '',
         manager_emp_id: '',
         cycle_day: 7,
         cycle_st_day: new Date().toISOString().split('T')[0],
@@ -38,6 +39,7 @@ export default function TeamForm({
 
     return {
       team_name: initialValues.team_name || initialValues.name || '',
+      email: initialValues.email || initialValues.team_email || '',
       manager_emp_id: initialValues.manager_emp_id ?? '',
       cycle_day: initialValues.cycle_day || 7,
       cycle_st_day: stDate,
@@ -110,6 +112,17 @@ export default function TeamForm({
           value={values.team_name}
           onChange={(e) => handleChange('team_name', e.target.value)}
           required
+        />
+      </label>
+
+      <label style={styles.label}>
+        Team email (CC for Monday reminders)
+        <input
+          type="email"
+          style={styles.input}
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+          placeholder="team-name@orange.com"
         />
       </label>
 

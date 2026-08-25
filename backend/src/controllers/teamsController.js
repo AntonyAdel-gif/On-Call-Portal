@@ -61,10 +61,20 @@ function parseDateToISO(dateStr) {
   return !isNaN(d.getTime()) ? d.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
 }
 
+function normalizeTeamEmail(value) {
+  if (value === undefined || value === null || value === '') return null;
+  const email = String(value).trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : false;
+}
+
 // POST /api/teams
 export const createTeam = async (req, res) => {
   try {
-    const { team_name, cycle_day, cycle_st_day, manager_emp_id, app_ids } = req.body;
+    const { team_name, cycle_day, cycle_st_day, manager_emp_id, app_ids, email } = req.body;
+    const teamEmail = normalizeTeamEmail(email);
+    if (teamEmail === false) {
+      return res.status(400).json({ error: 'email must be a valid team email address' });
+    }
 
     let managerId = manager_emp_id ? Number(manager_emp_id) : null;
     if (managerId) {
@@ -86,6 +96,7 @@ export const createTeam = async (req, res) => {
       cycle_day: cycle_day ? Number(cycle_day) : 7,
       cycle_st_day: parseDateToISO(cycle_st_day),
       manager_emp_id: managerId,
+      email: teamEmail,
     });
 
     // Exclude assigned team manager from active on-call rotation slots (def_oncall_ord = null)
@@ -122,10 +133,15 @@ export const createTeam = async (req, res) => {
 export const updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
-    const { team_name, cycle_day, cycle_st_day, manager_emp_id, app_ids } = req.body;
+    const { team_name, cycle_day, cycle_st_day, manager_emp_id, app_ids, email } = req.body;
 
     const existing = await Teams.getById(id);
     if (!existing) return res.status(404).json({ error: 'Team not found' });
+
+    const teamEmail = email !== undefined ? normalizeTeamEmail(email) : existing.email;
+    if (teamEmail === false) {
+      return res.status(400).json({ error: 'email must be a valid team email address' });
+    }
 
     let managerId = manager_emp_id !== undefined ? (manager_emp_id ? Number(manager_emp_id) : null) : existing.manager_emp_id;
 
@@ -146,6 +162,7 @@ export const updateTeam = async (req, res) => {
       cycle_day: cycle_day ? Number(cycle_day) : existing.cycle_day,
       cycle_st_day: cycle_st_day ? parseDateToISO(cycle_st_day) : existing.cycle_st_day,
       manager_emp_id: managerId,
+      email: teamEmail,
     });
 
     if (managerId) {

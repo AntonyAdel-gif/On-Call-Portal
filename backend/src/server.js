@@ -3,6 +3,7 @@ import 'dotenv/config';
 import app from './app.js';
 import './jobs/rotationJob.js';
 import { verifySmtpConnection } from './services/mailer.js';
+import { startOnCallReminderJob } from './jobs/onCallReminderJob.js';
 
 const PORT = process.env.PORT || 8003;
 
@@ -10,6 +11,12 @@ try {
   await verifySmtpConnection();
 } catch (err) {
   console.error('SMTP verification failed; the API will continue without confirmed email delivery', err);
+}
+
+try {
+  startOnCallReminderJob();
+} catch (err) {
+  console.error('Failed to schedule Monday on-call reminders', err);
 }
 
 app.listen(PORT, () => {
