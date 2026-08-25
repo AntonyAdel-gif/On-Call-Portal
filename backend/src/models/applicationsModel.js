@@ -27,6 +27,26 @@ export const getById = async (id) => {
   return result.rows[0];
 };
 
+export const findDuplicate = async ({ application_name, cartoo_id, excludeId = null }) => {
+  const result = await pool.query(
+    `SELECT application_name, cartoo_id
+     FROM applications
+     WHERE ($1::int IS NULL OR application_id <> $1)
+       AND (
+         LOWER(TRIM(application_name)) = LOWER(TRIM($2))
+         OR cartoo_id = $3
+       )`,
+    [excludeId, application_name, cartoo_id]
+  );
+
+  return {
+    applicationNameExists: result.rows.some(
+      (app) => app.application_name.trim().toLowerCase() === application_name.trim().toLowerCase()
+    ),
+    cartooIdExists: result.rows.some((app) => app.cartoo_id === cartoo_id),
+  };
+};
+
 export const create = async ({
   application_name,
   sla,
