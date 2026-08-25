@@ -64,6 +64,7 @@ export function normalizeHeaderKey(key) {
   if (k.includes('carto')) return 'cartoo_id';
   if (k.includes('basicat')) return 'basicat';
   if (k.includes('sla')) return 'sla';
+  if (k.includes('support')) return 'support';
 
   // Team fields
   if (k.includes('team') && k.includes('name')) return 'team_name';
@@ -121,8 +122,14 @@ export function validateRows(rawRows, type, expectedHeaders = []) {
     if (normalizedActualKeys.includes('ftid') && !normalizedActualKeys.includes('application_name')) {
       throw new Error('Template Error: You uploaded an Employee template into the Applications section. Please upload the Applications template.');
     }
-    if (!normalizedActualKeys.includes('application_name') || !normalizedActualKeys.includes('cartoo_id')) {
-      throw new Error(`Template Error: Uploaded sheet is missing required Application headers ('Application Name' and 'Cartoo ID (5 chars)').`);
+    if (
+      !normalizedActualKeys.includes('application_name') ||
+      !normalizedActualKeys.includes('cartoo_id') ||
+      !normalizedActualKeys.includes('support')
+    ) {
+      throw new Error(
+        `Template Error: Uploaded sheet is missing required Application headers ('Application Name', 'Cartoo ID (5 chars)', and 'Support').`
+      );
     }
   } else if (type === 'employee') {
     if (normalizedActualKeys.includes('application_name') || normalizedActualKeys.includes('cartoo_id')) {
@@ -151,16 +158,20 @@ export function validateRows(rawRows, type, expectedHeaders = []) {
     if (type === 'application') {
       const name = rowObj.application_name;
       const cartooId = rowObj.cartoo_id;
+      const support = rowObj.support;
 
       if (!name) {
         errors.push(`Row ${rowNum}: Application Name is required.`);
       }
       if (!cartooId) {
         errors.push(`Row ${rowNum}: Cartoo ID is required.`);
-      } else if (cartooId.length !== 5) {
+      } else if (!/^\d{5}$/.test(cartooId)) {
         errors.push(
-          `Row ${rowNum}: Cartoo ID must be exactly 5 characters (got "${cartooId}" with length ${cartooId.length}).`
+          `Row ${rowNum}: Cartoo ID must be exactly 5 digits (got "${cartooId}").`
         );
+      }
+      if (!['Infra', 'Ops', 'Both'].includes(support)) {
+        errors.push(`Row ${rowNum}: Support must be Infra, Ops, or Both.`);
       }
     } else if (type === 'employee') {
       const name = rowObj.emp_name;

@@ -96,6 +96,7 @@ export default function AdminDashboardPage() {
             sla: row.sla || '',
             basicat: row.basicat || '',
             cartoo_id: row.cartoo_id || row.cartoid || '',
+            support: row.support || '',
           },
           currentTeamId
         );
@@ -431,13 +432,14 @@ export default function AdminDashboardPage() {
           </Button>
           <ExcelImportControl
             templateFilename="team_applications_template.xlsx"
-            headers={['Application Name', 'SLA', 'Basicat', 'Cartoo ID (5 chars)']}
+            headers={['Application Name', 'SLA', 'Basicat', 'Cartoo ID (5 chars)', 'Support']}
             sampleRows={[
               {
                 'Application Name': 'Team App',
                 'SLA': '99.9%',
                 'Basicat': 'CAT01',
                 'Cartoo ID (5 chars)': '12345',
+                'Support': 'Infra',
               },
             ]}
             type="application"

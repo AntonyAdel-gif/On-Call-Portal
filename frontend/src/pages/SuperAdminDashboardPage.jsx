@@ -162,6 +162,7 @@ export default function SuperAdminDashboardPage() {
           sla: row.sla || '',
           basicat: row.basicat || '',
           cartoo_id: row.cartoo_id || row.cartoid || '',
+          support: row.support || '',
           team_id: teamIdVal,
         });
         successCount++;
@@ -544,20 +545,29 @@ export default function SuperAdminDashboardPage() {
             </Button>
             <ExcelImportControl
               templateFilename="applications_template.xlsx"
-              headers={['Application Name', 'SLA', 'Basicat', 'Cartoo ID (5 chars)', 'Team Name (or N/A)']}
+              headers={[
+                'Application Name',
+                'SLA',
+                'Basicat',
+                'Cartoo ID (5 chars)',
+                'Support',
+                'Team Name (or N/A)',
+              ]}
               sampleRows={[
                 {
                   'Application Name': 'Customer Portal',
                   'SLA': '99.9%',
                   'Basicat': 'CAT01',
                   'Cartoo ID (5 chars)': '12345',
+                  'Support': 'Infra',
                   'Team Name (or N/A)': 'Core Operations',
                 },
                 {
                   'Application Name': 'Billing Engine',
                   'SLA': '99.5%',
                   'Basicat': 'N/A',
-                  'Cartoo ID (5 chars)': 'ABCDE',
+                  'Cartoo ID (5 chars)': '67890',
+                  'Support': 'Ops',
                   'Team Name (or N/A)': 'N/A',
                 },
               ]}
