@@ -32,28 +32,30 @@ export const create = async ({
   cycle_day,
   cycle_st_day,
   manager_emp_id,
+  email,
 }) => {
   const result = await pool.query(
-    `INSERT INTO teams (team_name, cycle_day, cycle_st_day, manager_emp_id)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO teams (team_name, cycle_day, cycle_st_day, manager_emp_id, email)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [team_name, cycle_day, cycle_st_day, manager_emp_id]
+    [team_name, cycle_day, cycle_st_day, manager_emp_id, email]
   );
   return result.rows[0];
 };
 
 export const update = async (id, fields) => {
-  const { team_name, cycle_day, cycle_st_day, manager_emp_id } = fields;
+  const { team_name, cycle_day, cycle_st_day, manager_emp_id, email } = fields;
 
   const result = await pool.query(
     `UPDATE teams
      SET team_name = $1,
          cycle_day = $2,
          cycle_st_day = $3,
-         manager_emp_id = $4
-     WHERE team_id = $5
+         manager_emp_id = $4,
+         email = $5
+     WHERE team_id = $6
      RETURNING *`,
-    [team_name, cycle_day, cycle_st_day, manager_emp_id, id]
+    [team_name, cycle_day, cycle_st_day, manager_emp_id, email, id]
   );
   return result.rows[0];
 };

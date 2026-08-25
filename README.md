@@ -45,6 +45,11 @@ Follow these steps to set up and run the application locally:
    ```
 3. Run the database schema SQL scripts (located in `backend/sql/` or backend schema initialization) to create tables (`teams`, `employee`, `applications`, `schedule`, `static_info`, `swap_requests`).
 
+   For an existing database, add the team distribution email used for reminder CCs:
+   ```sql
+   ALTER TABLE teams ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+   ```
+
 ---
 
 ### 2. Mock LDAP Setup (LLDAP Docker)
@@ -80,7 +85,22 @@ docker compose up -d
    JWT_SECRET=super_secret_jwt_key_123
    LDAP_URL=ldap://localhost:3890
    LDAP_BASE_DN=dc=example,dc=com
+   MAIL_ENABLED=false
+   SMTP_HOST=smtp.example.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=on-call@example.com
+   SMTP_PASSWORD=replace_with_smtp_password
+   SMTP_FROM="On-Call Portal <on-call@example.com>"
+   MAIL_TIME_ZONE=Africa/Cairo
+   ONCALL_REMINDER_CRON="0 9 * * 1"
+   ONCALL_REMINDER_TIME_ZONE=Africa/Cairo
+   APP_BASE_URL=http://localhost:5173
    ```
+
+   Set `MAIL_ENABLED=true` when the SMTP credentials are ready. Use `SMTP_SECURE=true` for implicit TLS (normally port 465); port 587 normally uses `SMTP_SECURE=false` and upgrades with STARTTLS. `SMTP_USER` and `SMTP_PASSWORD` may both be left empty for a trusted internal relay. The backend verifies the SMTP connection at startup and continues serving API requests if verification fails.
+
+   The on-call reminder runs at 09:00 every Monday in `Africa/Cairo` by default. It emails each team's current on-call employee and CCs the address stored in `teams.email`. The cron expression and timezone can be changed with `ONCALL_REMINDER_CRON` and `ONCALL_REMINDER_TIME_ZONE`. If a team has no email address, the employee reminder is still sent without a CC and a warning is logged.
 
 3. Start the backend development server:
    ```bash

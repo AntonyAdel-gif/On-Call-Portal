@@ -31,6 +31,10 @@ router.use(authMiddleware);
  *                     type: integer
  *                   team_name:
  *                     type: string
+ *                   email:
+ *                     type: string
+ *                     format: email
+ *                     nullable: true
  *                   cycle_day:
  *                     type: integer
  *                   cycle_st_day:
@@ -120,6 +124,10 @@ router.get('/available-admins', getAvailableAdmins);
  *                   type: integer
  *                 team_name:
  *                   type: string
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   nullable: true
  *                 cycle_day:
  *                   type: integer
  *                 cycle_st_day:
@@ -157,6 +165,10 @@ router.get('/:id', getTeamById);
  *             properties:
  *               team_name:
  *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 nullable: true
  *               cycle_day:
  *                 type: integer
  *                 default: 7
@@ -183,6 +195,10 @@ router.get('/:id', getTeamById);
  *                   type: integer
  *                 team_name:
  *                   type: string
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   nullable: true
  *                 cycle_day:
  *                   type: integer
  *                 cycle_st_day:
@@ -227,6 +243,10 @@ router.post('/', requireRole('super_admin'), createTeam);
  *             properties:
  *               team_name:
  *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 nullable: true
  *               cycle_day:
  *                 type: integer
  *               cycle_st_day:
@@ -251,6 +271,10 @@ router.post('/', requireRole('super_admin'), createTeam);
  *                   type: integer
  *                 team_name:
  *                   type: string
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   nullable: true
  *                 cycle_day:
  *                   type: integer
  *                 cycle_st_day:

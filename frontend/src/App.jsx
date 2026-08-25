@@ -11,7 +11,8 @@
 //   /admin         -> Admin dashboard (protected: role must be 'admin')
 //   /super-admin   -> Super Admin dashboard (protected: role must be 'super_admin')
 // ============================================================================
-
+import './index.css';
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import Header from './components/Header.jsx';
@@ -23,12 +24,24 @@ import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
 import SuperAdminDashboardPage from './pages/SuperAdminDashboardPage.jsx';
 
 export default function App() {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+useEffect(() => {
+  document.body.className = theme;
+  localStorage.setItem("theme", theme);
+}, [theme]);
+
+const toggleTheme = () => {
+  setTheme(theme === "dark" ? "light" : "dark");
+};
+
   return (
     // AuthProvider wraps everything so any page/component can call useAuth().
     <AuthProvider>
       <BrowserRouter>
         {/* Header is outside <Routes>, so it stays visible on every page. */}
-        <Header />
+       <Header toggleTheme={toggleTheme} theme={theme} />
+
 
         <Routes>
           <Route path="/" element={<PublicSchedulePage />} />

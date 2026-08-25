@@ -5,10 +5,22 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.*
 
 # Logs
 *.log
 npm-debug.log*
+
+# Test coverage
+coverage/
+test-results/
+/tests/
+/jest.config.cjs
+/jest.integration.config.cjs
+
+*.sql
+
+
 
 # OS files
 .DS_Store

@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.cjs",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.cjs tests/unit",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.integration.config.cjs",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.cjs --coverage",
+    "test:email": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,8 +31,13 @@
     "jsonwebtoken": "^9.0.3",
     "ldapjs": "^3.0.7",
     "node-cron": "^4.6.0",
+    "nodemailer": "^9.0.5",
     "pg": "^8.22.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.6.0",
+    "supertest": "^7.2.2"
   }
 }

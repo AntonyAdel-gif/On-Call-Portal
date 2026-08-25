@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
 
   // Restore authenticated session on page refresh by re-validating stored JWT against GET /api/auth/me,
   // preventing stale profile rendering if permissions or roles changed on the server.
+  
   useEffect(() => {
     async function restoreSession() {
       setIsLoading(true);
