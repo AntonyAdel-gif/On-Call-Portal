@@ -46,8 +46,7 @@ export default function AdminDashboardPage() {
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [editingApp, setEditingApp] = useState(null);
   const [appSearchTerm, setAppSearchTerm] = useState('');
-
-const [supportFilter, setSupportFilter] = useState("");
+  const [supportFilter, setSupportFilter] = useState('');
 
   const [rosterPage, setRosterPage] = useState(1);
   const [isTablesLoading, setIsTablesLoading] = useState(true);
@@ -241,6 +240,23 @@ const [supportFilter, setSupportFilter] = useState("");
   const sortedEmployees = [...employees].sort(
     (a, b) => (a.def_oncall_ord ?? a.order ?? 0) - (b.def_oncall_ord ?? b.order ?? 0)
   );
+
+  const searchTerm = appSearchTerm.trim().toLowerCase();
+  const selectedSupport = supportFilter.toLowerCase();
+  const filteredTeamApps = teamApps.filter((app) => {
+    const searchableValues = [
+      app.application_name || app.name,
+      app.cartoo_id || app.cartoId,
+      app.basicat,
+      app.support,
+    ].map((value) => String(value || '').toLowerCase());
+    const appSupport = String(app.support || '').toLowerCase();
+    const matchesSearch =
+      !searchTerm || searchableValues.some((value) => value.includes(searchTerm));
+    const matchesSupport = !selectedSupport || appSupport === selectedSupport;
+
+    return matchesSearch && matchesSupport;
+  });
 
   return (
     <main style={styles.main}>
@@ -473,26 +489,7 @@ const [supportFilter, setSupportFilter] = useState("");
   <option value="Both">Both</option>
 
 </select>
-          {teamApps.filter((app) => {
-  const term = appSearchTerm.trim().toLowerCase();
-
-  const name = (app.application_name || app.name || '').toLowerCase();
-  const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
-  const basicat = (app.basicat || '').toLowerCase();
-  const support = (app.support || '').toLowerCase();
-
-  const matchesSearch =
-    !term ||
-    name.includes(term) ||
-    cartooId.includes(term) ||
-    basicat.includes(term);
-
-  const matchesSupport =
-    !supportFilter ||
-    support === supportFilter.toLowerCase();
-
-  return matchesSearch && matchesSupport;
-}).length === 0 ? (
+          {filteredTeamApps.length === 0 ? (
             <p style={{ marginTop: 12 }}>No matching applications found.</p>
           ) : (
             <Table style={{ marginTop: 12 }}>
@@ -507,24 +504,7 @@ const [supportFilter, setSupportFilter] = useState("");
                 </Tr>
               </Thead>
               <Tbody>
-                {teamApps
-                  .filter((app) => {
-                    const term = appSearchTerm.trim().toLowerCase();
-                    const name = (app.application_name || app.name || '').toLowerCase();
-                    const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
-                    const basicat = (app.basicat || '').toLowerCase();
-                    const support = (app.support || '').toLowerCase();
-                    const matchesSearch =
-                      !term ||
-                      name.includes(term) ||
-                      cartooId.includes(term) ||
-                      basicat.includes(term) ||
-                      support.includes(term);
-                    const matchesSupport =
-                      !supportFilter || support === supportFilter.toLowerCase();
-                    return matchesSearch && matchesSupport;
-                  })
-                  .map((app, idx) => {
+                {filteredTeamApps.map((app, idx) => {
                     const appId = app.application_id ?? app.id ?? idx;
                     const appName = app.application_name ?? app.name;
                     const cartoId = app.cartoo_id ?? app.cartoId;
