@@ -68,7 +68,21 @@ body {
   background-color: var(--color-black);
   color: var(--color-white);
   -webkit-font-smoothing: antialiased;
+}/* Light theme */
+body.light {
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.1s ease, color 0.1s ease;
+ -webkit-font-smoothing: antialiased;
+  --color-black: #ffffff;      /* black becomes white */
+  --color-white: #000000;      /* white becomes black */
+  --color-grey-light: #595959; /* light grey becomes dark grey */
+  --color-orange: #ff7900;     /* stays orange */
+  --color-surface: #f2f2f2; /* light surface for cards on white bg */
+
 }
+
+
 
 h1,
 h2,
@@ -138,3 +152,4 @@ table {
 .themed-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-white);
 }
+

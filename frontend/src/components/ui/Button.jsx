@@ -81,16 +81,19 @@ export default function Button({
   const sizeStyle = variant === 'link' ? null : SIZES[size] ?? SIZES.default;
 
   return (
-    <Component
-      style={{
-        fontFamily: 'inherit',
-        cursor: 'pointer',
-        ...VARIANTS[variant],
-        ...sizeStyle,
-        ...(tone ? TONES[tone] : null),
-        ...style,
-      }}
-      {...props}
-    />
-  );
+  <Component
+    style={{
+      fontFamily: 'inherit',
+      cursor: 'pointer',
+      ...VARIANTS[variant],
+      ...sizeStyle,
+      ...(tone ? TONES[tone] : null),
+      ...style,
+    }}
+    {...props}
+  >
+    {props.children}
+  </Component>
+);
+
 }
