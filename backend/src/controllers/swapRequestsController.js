@@ -2,6 +2,20 @@
 import * as SwapRequests from '../models/swapRequestsModel.js';
 import * as Schedule from '../models/scheduleModel.js';
 import * as Employee from '../models/employeeModel.js';
+import {
+  notifySwapRequestAccepted,
+  notifySwapRequestCreated,
+} from '../services/swapNotificationService.js';
+
+const runNotificationSafely = async (description, notification) => {
+  try {
+    await notification();
+  } catch (err) {
+    // The swap has already been persisted. Notification outages must not turn a successful
+    // business action into a misleading API failure or cause clients to submit it again.
+    console.error(`Post-swap notification failed (${description})`, err);
+  }
+};
 
 // GET /api/swap-requests/sent
 export const getMySentRequests = async (req, res) => {
@@ -58,6 +72,7 @@ export const createSwapRequest = async (req, res) => {
     }
 
     const sameWeek = new Date(requester_schedule_start).getTime() === new Date(target_schedule_start).getTime();
+    let targetWeek = requesterWeek;
 
     if (sameWeek) {
       // Same-week swap case: requester is asking their designated backup to cover their current week's shift.
@@ -67,7 +82,7 @@ export const createSwapRequest = async (req, res) => {
       }
     } else {
       // Cross-week trade case: verify target employee is actually assigned to the target_schedule_start shift.
-      const targetWeek = await Schedule.getByStartDateAndEmp(target_schedule_start, target_emp_id);
+      targetWeek = await Schedule.getByStartDateAndEmp(target_schedule_start, target_emp_id);
       if (!targetWeek || Number(targetWeek.emp_id) !== Number(target_emp_id)) {
         return res.status(400).json({ error: 'target_emp_id is not the on-call employee for target_schedule_start' });
       }
@@ -79,6 +94,17 @@ export const createSwapRequest = async (req, res) => {
       requester_schedule_start,
       target_schedule_start,
     });
+
+    await runNotificationSafely(
+      `swap request ${newRequest.request_id} created`,
+      () => notifySwapRequestCreated({
+        requester,
+        target,
+        request: newRequest,
+        requesterSchedule: requesterWeek,
+        targetSchedule: targetWeek,
+      }),
+    );
 
     res.status(201).json(newRequest);
   } catch (err) {
@@ -133,6 +159,28 @@ export const respondToRequest = async (req, res) => {
 
     // On acceptance, schedule rows are updated in PostgreSQL database; on rejection, request is simply marked rejected.
     const updated = await SwapRequests.respond(id, status);
+
+    if (status === 'accepted') {
+      await runNotificationSafely(
+        `swap request ${updated.request_id} accepted`,
+        async () => {
+          const [requester, target, requesterSchedule, targetSchedule] = await Promise.all([
+            Employee.getById(updated.requester_emp_id),
+            Employee.getById(updated.target_emp_id),
+            Schedule.getByStartDate(updated.requester_schedule_start),
+            Schedule.getByStartDate(updated.target_schedule_start),
+          ]);
+          return notifySwapRequestAccepted({
+            requester,
+            target,
+            request: updated,
+            requesterSchedule,
+            targetSchedule,
+          });
+        },
+      );
+    }
+
     res.json(updated);
   } catch (err) {
     console.error(err);

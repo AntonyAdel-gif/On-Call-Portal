@@ -258,7 +258,21 @@ export const getByStartDate = async (startDt) => {
      LIMIT 1`,
     [strVal, dateStr]
   );
-  return result.rows[0];
+  if (result.rows.length > 0) return result.rows[0];
+
+  // Swap-request timestamps pass through a TIMESTAMP WITHOUT TIME ZONE column and can
+  // differ from the original schedule timestamp by a few hours after serialization.
+  // Select only the nearest cycle boundary within one day so acceptance emails can still
+  // retrieve the authoritative end_dt without assuming a fixed cycle length.
+  const closest = await pool.query(
+    `SELECT * FROM schedule
+     WHERE start_dt BETWEEN $1::timestamp - INTERVAL '1 day'
+                        AND $1::timestamp + INTERVAL '1 day'
+     ORDER BY ABS(EXTRACT(EPOCH FROM (start_dt - $1::timestamp))) ASC
+     LIMIT 1`,
+    [strVal]
+  );
+  return closest.rows[0] || null;
 };
 
 // Returns full chronological rotation schedule for a single team.
@@ -279,6 +293,30 @@ export const getByTeamId = async (teamId) => {
      WHERE e.team_id = $1
      ORDER BY s.start_dt`,
     [teamId]
+  );
+  return result.rows;
+};
+
+// Returns the employee currently covering each team's active schedule interval.
+// The team's shared email address is included for reminder-message CC delivery.
+export const getCurrentOnCallAssignments = async () => {
+  const result = await pool.query(
+    `SELECT DISTINCT ON (t.team_id)
+       t.team_id,
+       t.team_name,
+       t.email AS team_email,
+       e.emp_id,
+       e.emp_name,
+       e.emp_mail,
+       s.start_dt,
+       s.end_dt
+     FROM teams t
+     JOIN employee e ON e.team_id = t.team_id
+     JOIN schedule s ON s.emp_id = e.emp_id
+     WHERE e.active_flg = TRUE
+       AND CURRENT_TIMESTAMP >= s.start_dt
+       AND CURRENT_TIMESTAMP < s.end_dt
+     ORDER BY t.team_id, s.start_dt DESC`
   );
   return result.rows;
 };

@@ -67,6 +67,7 @@ export function normalizeHeaderKey(key) {
 
   // Team fields
   if (k.includes('team') && k.includes('name')) return 'team_name';
+  if (k.includes('team') && (k.includes('mail') || k.includes('email'))) return 'team_email';
   if (k.includes('manager')) return 'manager_ftid';
   if (k.includes('cycle') && k.includes('start')) return 'cycle_st_day';
   if (k.includes('cycle') || k.includes('rotation')) return 'cycle_day';

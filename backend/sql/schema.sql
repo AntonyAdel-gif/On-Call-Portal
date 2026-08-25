@@ -5,6 +5,7 @@ CREATE TYPE swap_status AS ENUM ('pending', 'accepted', 'rejected');
 CREATE TABLE teams (
     team_id SERIAL PRIMARY KEY,
     team_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
     cycle_day INTEGER,
     cycle_st_day DATE,
     manager_emp_id INTEGER
