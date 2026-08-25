@@ -14,6 +14,19 @@ export const getById = async (id) => {
   return result.rows[0];
 };
 
+// Resolves the team managed by an admin so team-scoped endpoints cannot expose
+// data belonging to other teams.
+export const getAdminTeamId = async (empId) => {
+  const result = await pool.query(
+    `SELECT COALESCE(
+       (SELECT team_id FROM teams WHERE manager_emp_id = $1 LIMIT 1),
+       (SELECT team_id FROM employee WHERE emp_id = $1 LIMIT 1)
+     ) AS team_id`,
+    [empId]
+  );
+  return result.rows[0]?.team_id ?? null;
+};
+
 export const create = async ({
   team_name,
   cycle_day,
@@ -52,7 +65,10 @@ export const getAllTeamIds = async () => {
   return result.rows.map((row) => row.team_id);
 };
 
-export const isManagerAssignedToAnotherTeam = async (managerEmpId, excludeTeamId = null) => {
+export const isManagerAssignedToAnotherTeam = async (
+  managerEmpId,
+  excludeTeamId = null
+) => {
   if (!managerEmpId) return false;
   const result = await pool.query(
     `SELECT team_id FROM teams

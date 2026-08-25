@@ -268,10 +268,14 @@ export default function SuperAdminDashboardPage() {
 
   async function handleAppSubmit(values) {
     try {
+      const teamValues = { ...values, team_id: managingAppsForTeam };
       if (editingApp === 'new') {
-        await addTeamApp(values, managingAppsForTeam);
+        await addTeamApp(teamValues);
       } else {
-        await updateTeamApp(managingAppsForTeam, { ...values, id: editingApp.id || editingApp.application_id });
+        await updateTeamApp(managingAppsForTeam, {
+          ...teamValues,
+          id: editingApp.id || editingApp.application_id,
+        });
       }
       setEditingApp(null);
       reload();
@@ -496,6 +500,7 @@ export default function SuperAdminDashboardPage() {
                     <Th>SLA</Th>
                     <Th>Basicat</Th>
                     <Th>Carto ID</Th>
+                    <Th>Support</Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
@@ -506,6 +511,7 @@ export default function SuperAdminDashboardPage() {
                       <Td>{app.sla || '—'}</Td>
                       <Td>{app.basicat || '—'}</Td>
                       <Td>{app.cartoo_id || app.cartoId || '—'}</Td>
+                      <Td>{app.support || '—'}</Td>
                       <Td>
                         <Button variant="link" onClick={() => setEditingApp(app)}>
                           Edit
@@ -569,13 +575,15 @@ export default function SuperAdminDashboardPage() {
               initialValues={editingApp === 'new-global' ? null : editingApp}
               onSubmit={handleGlobalAppSubmit}
               onCancel={() => setEditingApp(null)}
+              teams={teams}
+              showTeamSelect
             />
           </div>
         )}
 
         <input
           type="text"
-          placeholder="Search by (name, basicat, cartoo)..."
+          placeholder="Search by (name, basicat, cartoo, support)..."
           value={appSearchTerm}
           onChange={(e) => {
             setAppSearchTerm(e.target.value);
@@ -591,7 +599,14 @@ export default function SuperAdminDashboardPage() {
             const name = (app.application_name || app.name || '').toLowerCase();
             const cartooId = (app.cartoo_id || app.cartoId || '').toLowerCase();
             const basicat = (app.basicat || '').toLowerCase();
-            return name.includes(term) || cartooId.includes(term) || basicat.includes(term);
+            const support = (app.support || '').toLowerCase();
+            return (
+  name.includes(term) ||
+  cartooId.includes(term) ||
+  basicat.includes(term) ||
+  support.includes(term)
+);
+
           });
           const totalAppsPages = Math.ceil(filteredGlobalApps.length / 10);
           const paginatedApps = filteredGlobalApps.slice((appsPage - 1) * 10, appsPage * 10);
@@ -609,6 +624,7 @@ export default function SuperAdminDashboardPage() {
                     <Th>SLA</Th>
                     <Th>Basicat</Th>
                     <Th>Carto ID</Th>
+                    <Th>Support</Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
@@ -619,6 +635,7 @@ export default function SuperAdminDashboardPage() {
                       <Td>{app.sla || '—'}</Td>
                       <Td>{app.basicat || '—'}</Td>
                       <Td>{app.cartoo_id || app.cartoId || '—'}</Td>
+                      <Td>{app.support || '—'}</Td>
                       <Td>
                         <Button variant="link" onClick={() => setEditingApp(app)}>
                           Edit
