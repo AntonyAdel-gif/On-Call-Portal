@@ -238,9 +238,14 @@ export default function AdminDashboardPage() {
     reload();
   }
 
-  const sortedEmployees = [...employees].sort(
-    (a, b) => (a.def_oncall_ord ?? a.order ?? 0) - (b.def_oncall_ord ?? b.order ?? 0)
-  );
+  const sortedEmployees = [...employees].sort((a, b) => {
+    const aIsActive = Boolean(a.active_flg ?? a.active);
+    const bIsActive = Boolean(b.active_flg ?? b.active);
+
+    if (aIsActive !== bIsActive) return aIsActive ? -1 : 1;
+
+    return (a.def_oncall_ord ?? a.order ?? 0) - (b.def_oncall_ord ?? b.order ?? 0);
+  });
 
   const searchTerm = appSearchTerm.trim().toLowerCase();
   const selectedSupport = supportFilter.toLowerCase();
