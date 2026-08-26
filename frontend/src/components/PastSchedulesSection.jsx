@@ -16,7 +16,7 @@ export default function PastSchedulesSection({ isSuperAdmin = false, teams = [],
   // Filters
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [presetRange, setPresetRange] = useState('all'); // 'all', '1m', '6m', '1y'
+  const [presetRange, setPresetRange] = useState('1m'); // 'all', '1m', '6m', '1y'
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 
@@ -227,7 +227,7 @@ export default function PastSchedulesSection({ isSuperAdmin = false, teams = [],
               }}
             />
           </label>
-          {(fromDate || toDate || searchTerm || presetRange !== 'all' || selectedTeamId) && (
+          {(fromDate || toDate || searchTerm || presetRange !== '1m' || selectedTeamId) && (
             <Button
               variant="secondary"
               size="small"
@@ -235,7 +235,7 @@ export default function PastSchedulesSection({ isSuperAdmin = false, teams = [],
               onClick={() => {
                 setSelectedTeamId('');
                 setSearchTerm('');
-                setPresetRange('all');
+                setPresetRange('1m');
                 setFromDate('');
                 setToDate('');
                 setVisibleCount(10);
