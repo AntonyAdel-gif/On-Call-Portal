@@ -123,6 +123,9 @@ export const createEmployee = async (req, res) => {
       if (!backup || backup.team_id !== targetTeamId) {
         return res.status(400).json({ error: 'Backup employee must be on the same team' });
       }
+      if (backup.active_flg !== true) {
+        return res.status(400).json({ error: 'Backup employee must be active' });
+      }
       const teamRes = await pool.query('SELECT manager_emp_id FROM teams WHERE team_id = $1', [targetTeamId]);
       const managerEmpId = teamRes.rows[0]?.manager_emp_id;
       if (managerEmpId && Number(normalizedBkEmpId) === Number(managerEmpId)) {
@@ -254,6 +257,9 @@ export const updateEmployee = async (req, res) => {
       const relevantTeamId = fields.team_id || existing.team_id;
       if (!backup || backup.team_id !== relevantTeamId) {
         return res.status(400).json({ error: 'Backup employee must be on the same team' });
+      }
+      if (backup.active_flg !== true) {
+        return res.status(400).json({ error: 'Backup employee must be active' });
       }
       const teamRes = await pool.query('SELECT manager_emp_id FROM teams WHERE team_id = $1', [relevantTeamId]);
       const managerEmpId = teamRes.rows[0]?.manager_emp_id;

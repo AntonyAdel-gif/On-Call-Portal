@@ -67,9 +67,12 @@ export default function EmployeeForm({
     });
   }
 
-  // Filter backup options to exclude self and the team manager (manager cannot serve as backup).
+  // Only active teammates can provide backup coverage. Also exclude self and the
+  // team manager, who does not participate in the on-call rotation.
   const backupOptions = teammates.filter((emp) => {
     const empIdVal = emp.emp_id || emp.id;
+    const isActive = emp.active_flg ?? emp.active;
+    if (isActive !== true) return false;
     if (String(empIdVal) === String(selfId)) return false;
     if (teamManagerId && String(empIdVal) === String(teamManagerId)) return false;
     return true;

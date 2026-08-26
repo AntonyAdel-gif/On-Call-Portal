@@ -302,7 +302,11 @@ export default function AdminDashboardPage() {
           <h3>{editingEmployee === 'new' ? 'Add employee' : 'Edit employee'}</h3>
           <EmployeeForm
             initialValues={editingEmployee === 'new' ? null : editingEmployee}
-            teams={[{ id: currentTeamId, name: teamName || 'My Team' }]}
+            teams={[{
+              id: currentTeamId,
+              name: teamName || 'My Team',
+              manager_emp_id: teamObj?.manager_emp_id ?? user?.emp_id ?? user?.id,
+            }]}
             lockTeam
             userRole="admin"
             teammates={employees}
