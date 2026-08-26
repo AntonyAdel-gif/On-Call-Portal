@@ -288,7 +288,7 @@ export default function AdminDashboardPage() {
             sampleRows={[
               {
                 'Employee Name': 'Jane Doe',
-                'Email': 'jane@company.com',
+                'Email': 'jane@orange.com',
                 'Phone 1': '01087654321',
                 'Phone 2 (or N/A)': 'N/A',
                 'FTID': 'FT9002',

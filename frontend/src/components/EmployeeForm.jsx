@@ -110,6 +110,9 @@ export default function EmployeeForm({
           style={styles.input}
           value={values.emp_mail}
           onChange={(e) => handleChange('emp_mail', e.target.value)}
+          pattern="^[^@\s]+@orange\.com$"
+          title="Enter an email address ending in @orange.com"
+          placeholder="name@orange.com"
           required
         />
       </label>

@@ -17,6 +17,12 @@ const getAdminTeamId = async (user) => {
   return user.team_id;
 };
 
+// Employee notifications must use an Orange corporate mailbox.
+const normalizeEmployeeEmail = (value) => {
+  const email = String(value ?? '').trim();
+  return /^[^\s@]+@orange\.com$/i.test(email) ? email : null;
+};
+
 // ===== READ =====
 
 // GET /api/employees
@@ -79,6 +85,11 @@ export const createEmployee = async (req, res) => {
     const requesterRole = req.user.role;
     const adminTeamId = await getAdminTeamId(req.user);
     const { emp_name, name, phone1, phone, phone2, emp_mail, email, ftid, bk_emp_id, team_id, role, active_flg, active } = req.body;
+    const employeeEmail = normalizeEmployeeEmail(emp_mail ?? email);
+
+    if (!employeeEmail) {
+      return res.status(400).json({ error: 'Employee email must end in @orange.com' });
+    }
 
     // Forces newly created employee into team manager's team when caller is admin; super admin can explicitly assign team_id.
     const targetTeamId = requesterRole === 'super_admin' ? (team_id || adminTeamId) : adminTeamId;
@@ -98,7 +109,7 @@ export const createEmployee = async (req, res) => {
         emp_name: emp_name || name,
         phone1: phone1 || phone,
         phone2: phone2 || null,
-        emp_mail: emp_mail || email,
+        emp_mail: employeeEmail,
         team_id: null,
         ftid,
         def_oncall_ord: null,
@@ -140,7 +151,7 @@ export const createEmployee = async (req, res) => {
       emp_name: emp_name || name,
       phone1: phone1 || phone,
       phone2: phone2 || null,
-      emp_mail: emp_mail || email,
+      emp_mail: employeeEmail,
       team_id: targetTeamId,
       ftid,
       def_oncall_ord: nextOrder,
@@ -176,6 +187,14 @@ export const updateEmployee = async (req, res) => {
       return res.status(403).json({ error: 'Not authorized to edit this employee' });
     }
 
+    const submittedEmail = fields.emp_mail ?? fields.email;
+    const employeeEmail = submittedEmail === undefined
+      ? existing.emp_mail
+      : normalizeEmployeeEmail(submittedEmail);
+    if (!employeeEmail) {
+      return res.status(400).json({ error: 'Employee email must end in @orange.com' });
+    }
+
     // Strip unauthorized role/team updates if caller is admin.
     if (requesterRole === 'admin') {
       delete fields.team_id;
@@ -207,7 +226,7 @@ export const updateEmployee = async (req, res) => {
         emp_name: fields.emp_name || fields.name || existing.emp_name,
         phone1: fields.phone1 || fields.phone || existing.phone1,
         phone2: fields.phone2 || existing.phone2 || null,
-        emp_mail: fields.emp_mail || fields.email || existing.emp_mail,
+        emp_mail: employeeEmail,
         team_id: null,
         def_oncall_ord: null,
         active_flg: fields.active_flg !== undefined ? Boolean(fields.active_flg) : existing.active_flg,
@@ -301,7 +320,7 @@ export const updateEmployee = async (req, res) => {
       emp_name: fields.emp_name || fields.name || existing.emp_name,
       phone1: fields.phone1 || fields.phone || existing.phone1,
       phone2: fields.phone2 || existing.phone2 || null,
-      emp_mail: fields.emp_mail || fields.email || existing.emp_mail,
+      emp_mail: employeeEmail,
       team_id: fields.team_id || existing.team_id,
       def_oncall_ord: orderChanged ? existing.def_oncall_ord : targetOrder,
       active_flg: newActiveFlg,

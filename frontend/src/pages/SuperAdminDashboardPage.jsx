@@ -696,7 +696,7 @@ export default function SuperAdminDashboardPage() {
               sampleRows={[
                 {
                   'Employee Name': 'Jane Doe',
-                  'Email': 'jane@company.com',
+                  'Email': 'jane@orange.com',
                   'Phone 1': '01012345678',
                   'Phone 2 (or N/A)': 'N/A',
                   'FTID': 'FT9001',

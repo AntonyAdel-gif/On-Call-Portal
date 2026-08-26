@@ -147,7 +147,7 @@ async function runVerification() {
           emp_name: 'Test New Employee',
           phone1: '1234567890',
           phone2: '0987654321',
-          emp_mail: 'newemp@company.local',
+          emp_mail: 'newemp@orange.com',
           team_id: teamId,
           ftid: ftid,
           role: 'user'
@@ -171,7 +171,7 @@ async function runVerification() {
         body: JSON.stringify({
           emp_name: 'Updated Employee Name',
           phone1: '5555555555',
-          emp_mail: 'updated@company.local',
+          emp_mail: 'updated@orange.com',
           team_id: teamId,
           role: 'user',
           active_flg: true
@@ -362,7 +362,7 @@ async function runVerification() {
         headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           emp_name: 'Employee To Delete',
-          emp_mail: 'del@co.com',
+          emp_mail: 'del@orange.com',
           ftid: ftid,
           role: 'user'
         })
