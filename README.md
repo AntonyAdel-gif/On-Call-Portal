@@ -22,6 +22,7 @@ The **On-Call Portal** is an enterprise Web Application built to streamline engi
 
 ### Authentication & Mock Services
 - **Mock LDAP**: Local LLDAP Docker Container for Active Directory user authentication testing
+- **Local fallback accounts**: Three built-in role accounts can authenticate without LDAP
 
 ---
 
@@ -63,6 +64,21 @@ docker compose up -d
 - **LDAP Server**: `ldap://localhost:3890`
 - **Web UI**: `http://localhost:17170` (Admin login: `admin` / `password`)
 - **User Setup**: Create test users in the LLDAP Web UI with `uid` values matching `employee.ftid` values in your PostgreSQL database.
+
+LDAP is optional for the three local fallback accounts below. The portal first
+looks for an active employee whose `ftid` matches the username. If there is no
+exact match, it uses the first active employee with the account's role so the
+employee and team-scoped screens still have valid database data.
+
+| Username | Password | Role |
+|---|---|---|
+| `superadmin` | `super123` | Super Admin |
+| `admin` | `admin123` | Admin |
+| `user` | `user123` | User |
+
+The database must contain at least one active employee for each role you want
+to test. These credentials are hardcoded for local/demo use and should be
+changed or removed before exposing the portal to an untrusted network.
 
 ---
 

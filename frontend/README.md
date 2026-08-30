@@ -18,6 +18,10 @@ file needs to change.
 |--------------|-----------|-------------|
 | `admin`      | `admin123`| Admin       |
 | `superadmin` | `super123`| Super Admin |
+| `user`       | `user123` | User        |
+
+These local accounts bypass LDAP. The backend prefers an active employee with
+a matching `ftid`, then falls back to the first active employee with that role.
 
 ## Project structure
 

@@ -9,7 +9,7 @@ const router = express.Router();
  * @openapi
  * /auth/login:
  *   post:
- *     summary: Authenticate user via LDAP and return JWT token
+ *     summary: Authenticate via a local fallback account or LDAP and return a JWT token
  *     tags:
  *       - Auth
  *     requestBody:
@@ -48,7 +48,7 @@ const router = express.Router();
  *                 error:
  *                   type: string
  *       401:
- *         description: Invalid company credentials
+ *         description: Invalid username or password
  *         content:
  *           application/json:
  *             schema:

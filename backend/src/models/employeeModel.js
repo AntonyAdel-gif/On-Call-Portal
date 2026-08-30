@@ -43,6 +43,21 @@ export const getByFtid = async (ftid) => {
   return result.rows[0];
 };
 
+// Resolves a local fallback login to a usable employee profile. Prefer an
+// employee whose FTID is the local username; if one has not been created,
+// use the first active employee with the credential's fixed role.
+export const getLocalAuthCandidate = async (ftid, role) => {
+  const result = await pool.query(
+    `SELECT * FROM employee
+     WHERE active_flg = TRUE
+       AND (LOWER(ftid) = LOWER($1) OR role = $2)
+     ORDER BY CASE WHEN LOWER(ftid) = LOWER($1) THEN 0 ELSE 1 END, emp_id
+     LIMIT 1`,
+    [ftid, role]
+  );
+  return result.rows[0];
+};
+
 // Next free rotation number for a team — used automatically on creation
 export const getNextOrder = async (teamId) => {
   const result = await pool.query(
